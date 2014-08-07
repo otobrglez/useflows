@@ -1,3 +1,6 @@
 var content = $("<%=j render 'feed' %>");
-$("div.shots").append($(".shots-row",content));
-$(".shots-wrap .next-wrap").replaceWith($(".next-wrap",content));
+$(".item-list").append(content);
+setTimeout(function(){
+  window.pckry.appended(content);
+}, 100)
+$("#next-wrap").html('<%=j link_to_next_page shots, "More...", remote: true, params: params%>');

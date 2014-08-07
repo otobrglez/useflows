@@ -1,32 +1,116 @@
 !!!
 %html
   %head
-    %title= content_for?(:title) ? yield(:title) : "mirkopatterns"
+    %title= content_for?(:title) ? yield(:title) : "UseFlows"
     = stylesheet_link_tag    "app", media: "all"
     = javascript_include_tag "vendor/custom.modernizr"
     = csrf_meta_tags
-    %meta{name:"viewport", content:"width=device-width, initial-scale=1.0"}
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
+    %link{:href => "http://fonts.googleapis.com/css?family=Open+Sans:400,700", :rel => "stylesheet", :type => "text/css"}
 %body
+  .container
+    %header
+      %nav.row
+        -# %a.logo{href: '/'}
+        %ul
+          %li.useflows
+            = link_to '/' do
+              UseFlows
+              %span= Shot.count.to_s
+              %i
+            - (Shot.tag_counts.sort{ |x,y| y.count <=> x.count}).each_slice(28) do |tags|
+              %ul.dropdown
+                - tags.each do |tag|
+                  %li
+                    = link_to  "#{tag.name.titleize} #{tag.count}", "/?tag=#{tag.name}"
 
-  .nav-wrap
-    %header.header
-      .header-inner-wrap
-        .pull-right
-          = render 'layouts/shared/user'
-      %hr
-      .header-inner-wrap
-        = link_to "mirkopatterns", root_path, class: :logo
-        \/
-        %span.mission place for your #shot of ux.
-        \/
-        = link_to "+ new shot", root_path, class: :new_shot
+          - if current_user
+            = render 'layouts/shared/user_favorites_dropdown'
+          %li.new.hidden
+            %a{:href => "#"}
+              %i
+        .search.hidden
+          %form#searchForm{:action => ""}
+            %input{:placeholder => "Try searching for something ...", :type => "text"}
+            %input.btn{:type => "submit", :value => ""}
+        %ul.profile
+          %li
+            %a{:href => "#"}
+              - if current_user
+                = image_tag current_user.image_url, style: 'width: 60px'
+              - else
+                = image_tag 'display-pic.png'
+            %ul.dropdown
+              - if current_user
+                %li
+                  = link_to 'Log Out', session_path(1), method: :delete
+              - else
+                %li
+                  = link_to 'Login with Twitter', '/auth/twitter'
 
 
-  %section.content
-    .content-inner-wrap
+    .fw.content
       = yield
 
-  = render "shots/form"
+    = render "shots/form"
+
+  .footer-full.fw
+    .about
+      %p.top
+        %i
+        = image_tag 'useflows.png'
+        %blockquote.quote A Useflow is a piece of interface that makes a user fly - an interaction so intuitive that when a user experiences it, he is left with a "wow" sound echoing in his head.
+        %h2 “Good is the enemy of great.” - Jim Collins
+        %p A good user experience happens when the interface doesn't prevent the user from doing what he wants to. Great user experience is defined by an interface which improves the user's productivity and creativity by offering him everything he's looking for and, more importantly, everything he'll need in a second, whether he realizes it or not.
+        %p The sensation of superb user experience is defined as flow - and we know about flow. We've built more than 100 sites and apps. We have studied HCI, HF, IA, UI, UX... More importantly, we've seen users flowing and failing in hundreds of usability testing sessions.
+        %p UseFlows.com is a growing collection of best interaction design cases. We want to help designers and developers observe and understand micro interactions. We simply record an actual use of a certain interface and tag it. This helps you see the captured flow and compare it to similar ones.
+        %h2 A successful product needs more than good looks.
+        %p The UX industry is growing and there are tens of thousands of people producing yet another sexy new interaction today that will bring user joy and boost KPI's.
+        %p • Some do user research,
+          • others analyse traffic,
+          • some just develop the damn thing and wait to see what happens
+          • all of them explore best practices to see what works and what doesn't.
+        %p Design libraries (Dribbble, Behance etc.) are popular places where you can find the visual inspiration for your next digital product. However, these sites focus primarily on branding, typography, general appearance, and color. They often feel like a beauty contest, and as we know, make-up is not what makes the winner.
+        %p Some study the latest interaction tricks by simply copying the big players such as Google or Amazon. Others use interface pattern libraries such as ui-patterns.com or developer.yahoo.com/ypatterns. These libraries tend to display static imagery with explanatory text. Sadly, the users don't have the patience to read it, and they end up with a false sense of competence and a lack of thorough understanding of the patterns. In the end, you end up registering to 10 different websites just to see the registration-process interactions. And when it comes to mobile apps... Buying, installing and comparing 10s of similar apps can take you days.
+        %h2 Useflows offers a solution for this itch.
+        %p We live in a world of CSS3, HTML 5 and Javascript, a world filled with animations, transitions, delays and special effects. Trying to communicate, explain or create an effective interface is more difficult than ever.
+        %p To really understand an individual interaction, you need to experience it. This is where Useflows shines. Useflows allows you to simply review numerous login-processes on a single page. We are using interactions so you don't need to.
+        %p Don’t be shy. Tell us what you think: useflows@gmail.com
+
+        .people
+          .owners.third
+            %strong Idea guys
+            %p
+              %a{:href => "//twitter.com/mitjamavsar", :target => "_blank", :title => "Mitja Mavsar"}@mitjamavsar
+            %p
+              %a{:href => "//twitter.com/otobrglez", :target => "_blank", :title => "Oto Brglez"}@otobrglez
+          .developers.third
+            %strong Code guys
+            %p
+              %a{:href => "//twitter.com/mihamencin", :target => "_blank", :title => "Miha Mencin"}@mihamencin
+            %p
+              %a{:href => "//twitter.com/dTilen", :target => "_blank", :title => "Tilen Držan"}@dTilen
+            %p
+              %a{:href => "//twitter.com/otobrglez", :target => "_blank", :title => "Oto Brglez"}@otobrglez
+          .designers.third
+            %strong Design guys
+            %p
+              %a{:href => "//twitter.com/gofrasdesign", :target => "_blank", :title => "Frane Gorjanc"}@gofrasdesign
+            %p
+              %a{:href => "//twitter.com/danijelkurincic", :target => "_blank", :title => "Danijel Kurinčič"}@danijelkurincic
+
+  %footer.fw
+    .wrapper.row.bottom
+      %p.copyright Useflows © 2014
+      %p.info
+        %i
+      %p.social
+        %span.twitter
+          %a{:href => "//twitter.com/useflows", :title => "Follow us on Twitter", :target => "_blank"}
+            = image_tag "tw.png", :alt => "Follow us on Twitter"
+        %span.facebook
+          %a{:href => "//facebook.com/useflows", :title => "Follow us on Facebook", :target => "_blank"}
+            = image_tag "fb.png", :alt => "Follow us on Facebook"
 
   = javascript_include_tag "app"
 

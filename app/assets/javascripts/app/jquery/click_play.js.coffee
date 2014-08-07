@@ -1,27 +1,28 @@
-class ImageSwapper
+class ClickPlay
 
   constructor: (element)->
+    @curently_playing = null
     @image = $(element)
     @image_src = @image.attr('src')
-    $(document).on('mouseenter', '.still', (e)=>
-      @mouse_in(e)
+
+    $(document).on('click', '.still', (e)=>
+      @play(e)
+      if @curently_playing
+        @stop(@curently_playing)
+      @curently_playing = e
     )
 
-    $(document).on('mouseleave', '.still', (e)=>
-      @mouse_out(e)
-    )
-
-  mouse_in: (e) =>
+  play: (e) =>
     img = $(e.currentTarget)
     $('.still').closest('.item').addClass('faded')
     img.closest('.item').removeClass('faded')
+    img.prev('.overlay').hide()
     @switch_image(img)
 
-  mouse_out: (e) =>
+  stop: (e) =>
     img = $(e.currentTarget)
-    $('.still').closest('.item').removeClass('faded')
+    img.prev('.overlay').show()
     @switch_image(img)
-
 
   replace_name: (file_name) ->
     if file_name.indexOf('still_') == 0
@@ -41,5 +42,5 @@ class ImageSwapper
 
 
 
-$.fn.image_swapper = () ->
-  new ImageSwapper()
+$.fn.click_play = () ->
+  new ClickPlay()
